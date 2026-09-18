@@ -8,7 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%23ffe566'/%3E%3Ccircle cx='42' cy='24' r='18' fill='%2312082a'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@500;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -55,11 +55,6 @@
             <div class="reel" id="cell-10"><div class="strip" id="reel-10"></div></div>
             <div class="reel" id="cell-1"><div class="strip" id="reel-1"></div></div>
           </div>
-          <div class="reel-labels">
-            <span>Trăm</span>
-            <span>Chục</span>
-            <span>Đơn vị</span>
-          </div>
         </div>
 
         <button class="spin-btn compact" id="btn-spin" type="button">GẠT CẦN</button>
@@ -81,30 +76,52 @@
   </main>
 
   <section class="podium" aria-label="Bục trao giải">
-    <p class="podium-title">Bục bạn nhỏ may mắn</p>
+    <p class="podium-title">
+      <span aria-hidden="true">🍡</span>
+      Bục bạn nhỏ may mắn
+      <span aria-hidden="true">🍡</span>
+    </p>
     <div class="podium-row">
       <article class="prize prize-ba" id="card-ba">
-        <span class="prize-mascot" aria-hidden="true">🥮</span>
-        <p class="prize-badge">Hạng 3</p>
-        <p class="prize-name">Giải Ba</p>
-        <p class="prize-num" id="num-ba">•••</p>
-        <span class="prize-deco" aria-hidden="true">🏮</span>
+        <div class="prize-hat" aria-hidden="true">
+          <span class="prize-mascot">🥮</span>
+        </div>
+        <div class="prize-block">
+          <span class="prize-rank" aria-hidden="true">3</span>
+          <p class="prize-badge">Bạn đồng</p>
+          <p class="prize-name">Giải Ba</p>
+          <p class="prize-num" id="num-ba">•••</p>
+          <span class="prize-deco" aria-hidden="true">🏮 💛</span>
+        </div>
       </article>
       <article class="prize prize-nhat" id="card-nhat">
-        <span class="prize-crown" aria-hidden="true">👑</span>
-        <span class="prize-mascot big" aria-hidden="true">🌕</span>
-        <p class="prize-badge">Siêu sao</p>
-        <p class="prize-name">Giải Nhất</p>
-        <p class="prize-num" id="num-nhat">•••</p>
-        <span class="prize-deco" aria-hidden="true">⭐⭐⭐</span>
+        <div class="prize-hat" aria-hidden="true">
+          <span class="prize-crown">👑</span>
+          <span class="prize-mascot big">🌕</span>
+        </div>
+        <div class="prize-block">
+          <span class="prize-rank" aria-hidden="true">1</span>
+          <p class="prize-badge">Siêu sao</p>
+          <p class="prize-name">Giải Nhất</p>
+          <p class="prize-num" id="num-nhat">•••</p>
+          <span class="prize-deco" aria-hidden="true">⭐ ✨ ⭐</span>
+        </div>
       </article>
       <article class="prize prize-nhi" id="card-nhi">
-        <span class="prize-mascot" aria-hidden="true">🐇</span>
-        <p class="prize-badge">Hạng 2</p>
-        <p class="prize-name">Giải Nhì</p>
-        <p class="prize-num" id="num-nhi">•••</p>
-        <span class="prize-deco" aria-hidden="true">✨</span>
+        <div class="prize-hat" aria-hidden="true">
+          <span class="prize-mascot">🐇</span>
+        </div>
+        <div class="prize-block">
+          <span class="prize-rank" aria-hidden="true">2</span>
+          <p class="prize-badge">Bạn bạc</p>
+          <p class="prize-name">Giải Nhì</p>
+          <p class="prize-num" id="num-nhi">•••</p>
+          <span class="prize-deco" aria-hidden="true">🌸 ✨</span>
+        </div>
       </article>
+    </div>
+    <div class="podium-floor" aria-hidden="true">
+      <span>🎋</span><span>🏮</span><span>🌙</span><span>🏮</span><span>🎋</span>
     </div>
   </section>
 

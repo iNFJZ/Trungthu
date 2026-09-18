@@ -146,6 +146,7 @@ function showConfirm(show) {
 }
 
 function resetNight() {
+  stopFireworks();
   state.pool = createPool(0, 999);
   state.winners = { ba: null, nhi: null, nhat: null };
   state.step = 0;
@@ -238,26 +239,46 @@ function playTuneStep(i) {
   state.tuneTimer = setTimeout(() => playTuneStep(i + 1), 320);
 }
 
+function setMusicUi(on) {
+  els.musicBtn.classList.toggle("on", on);
+  els.musicBtn.setAttribute("aria-pressed", String(on));
+}
+
+function isMusicAudible() {
+  return state.musicOn && ((!els.bgm.paused && !els.bgm.ended) || Boolean(state.tuneTimer));
+}
+
+function playBgm() {
+  els.bgm.volume = 0.38;
+  return els.bgm.play().then(() => {
+    state.hasTrack = true;
+    clearTimeout(state.tuneTimer);
+    state.tuneTimer = 0;
+  });
+}
+
 function startMusic() {
   state.musicOn = true;
-  els.musicBtn.classList.add("on");
-  els.musicBtn.setAttribute("aria-pressed", "true");
+  setMusicUi(true);
   audioCtx();
   clearTimeout(state.tuneTimer);
-  if (state.hasTrack) {
-    els.bgm.volume = 0.38;
-    els.bgm.play().catch(() => playTuneStep(0));
-  } else {
-    playTuneStep(0);
-  }
+  state.tuneTimer = 0;
+  playBgm().catch(() => {
+    // Browser chặn autoplay hoặc file chưa sẵn sàng — chờ canplay / lần chạm đầu.
+    if (!state.hasTrack) {
+      state.tuneTimer = setTimeout(() => {
+        if (state.musicOn && !state.hasTrack && els.bgm.paused) playTuneStep(0);
+      }, 900);
+    }
+  });
 }
 
 function stopMusic() {
   state.musicOn = false;
-  els.musicBtn.classList.remove("on");
-  els.musicBtn.setAttribute("aria-pressed", "false");
+  setMusicUi(false);
   els.bgm.pause();
   clearTimeout(state.tuneTimer);
+  state.tuneTimer = 0;
 }
 
 function pullLever() {
@@ -346,7 +367,8 @@ function finishReveal(prize) {
     : `Số ${String(n).padStart(3, "0")} — có bé nhận không?`);
   showConfirm(true);
   fanfare(last);
-  fireworks(last ? "finale" : "show");
+  if (last) startFinaleLoop();
+  else fireworks("show");
 }
 
 function acceptWinner() {
@@ -366,7 +388,7 @@ function acceptWinner() {
     setHint(`Chúc mừng bé trúng Giải Nhất số ${String(n).padStart(3, "0")}! Đêm hội đã trao đủ 3 giải.`);
     els.spinKicker.textContent = "Chúc mừng";
     els.spinLabel.textContent = String(n).padStart(3, "0");
-    fireworks("finale");
+    startFinaleLoop();
     fanfare(true);
   } else {
     const next = PRIZES[state.step];
@@ -380,6 +402,7 @@ function acceptWinner() {
 
 function discardAndRedraw() {
   if (!state.awaiting) return;
+  stopFireworks();
   const prize = PRIZES[state.step];
   if (!prize) return;
   const n = state.winners[prize.id];
@@ -401,10 +424,48 @@ const FX_CAP = 220;
 const fxParts = [];
 let fxRaf = 0;
 let fxShellTimers = [];
+let fxLoop = 0;
 
 function clearFxTimers() {
   fxShellTimers.forEach(clearTimeout);
   fxShellTimers = [];
+}
+
+function stopFireworks() {
+  if (fxLoop) {
+    clearInterval(fxLoop);
+    fxLoop = 0;
+  }
+  clearFxTimers();
+  fxParts.length = 0;
+  if (fxRaf) {
+    cancelAnimationFrame(fxRaf);
+    fxRaf = 0;
+  }
+  const c = els.confetti;
+  if (c.width && c.height) {
+    const ctx = c.getContext("2d");
+    if (ctx) ctx.clearRect(0, 0, c.width, c.height);
+  }
+}
+
+function burstFinaleShells() {
+  const base = pointFrom(null);
+  const n = 2 + ((Math.random() * 2) | 0);
+  for (let i = 0; i < n; i++) {
+    spawnShell(
+      base.x + (Math.random() - 0.5) * innerWidth * 0.72,
+      Math.max(40, base.y + (Math.random() - 0.5) * innerHeight * 0.38),
+      34 + ((Math.random() * 22) | 0),
+      7 + Math.random() * 2.5
+    );
+  }
+}
+
+function startFinaleLoop() {
+  if (fxLoop) return;
+  fireworks("finale");
+  fxLoop = setInterval(burstFinaleShells, 780);
 }
 
 function fxCtx() {
@@ -472,7 +533,7 @@ function tickFx() {
   fxParts.length = write;
   ctx.globalAlpha = 1;
 
-  if (fxParts.length || fxShellTimers.length) fxRaf = requestAnimationFrame(tickFx);
+  if (fxParts.length || fxShellTimers.length || fxLoop) fxRaf = requestAnimationFrame(tickFx);
   else {
     ctx.clearRect(0, 0, w, h);
     fxRaf = 0;
@@ -562,19 +623,32 @@ function decorateSky() {
   });
 }
 
+function onTrackReady() {
+  state.hasTrack = true;
+  clearTimeout(state.tuneTimer);
+  state.tuneTimer = 0;
+  if (state.musicOn && els.bgm.paused) playBgm().catch(() => {});
+}
+
 function bindMusic() {
-  els.bgm.volume = 0.4;
-  els.bgm.src = "music/trungthu.mp3";
-  els.bgm.addEventListener("canplay", () => { state.hasTrack = true; });
+  els.bgm.loop = true;
+  els.bgm.preload = "auto";
+  els.bgm.volume = 0.38;
+  // Không gán lại src nếu HTML đã có — tránh hủy load đang chạy.
+  if (!els.bgm.getAttribute("src")) els.bgm.src = "music/trungthu.mp3";
+  els.bgm.addEventListener("canplay", onTrackReady);
+  els.bgm.addEventListener("canplaythrough", onTrackReady);
   els.bgm.addEventListener("error", () => {
     state.hasTrack = false;
     console.warn("Không phát được music/trungthu.mp3 — kiểm tra file nhạc trong thư mục music/");
+    if (state.musicOn) playTuneStep(0);
   });
+  try { els.bgm.load(); } catch { /* ignore */ }
 }
 
 function ensureMusicPlaying() {
   if (!state.musicOn) startMusic();
-  else if (els.bgm.paused && state.hasTrack) els.bgm.play().catch(() => {});
+  else if (els.bgm.paused) playBgm().catch(() => { if (!state.hasTrack) playTuneStep(0); });
 }
 
 function tryAutoMusic() {
@@ -584,8 +658,8 @@ function tryAutoMusic() {
     window.removeEventListener("pointerdown", unlock);
     window.removeEventListener("keydown", unlock);
   };
-  window.addEventListener("pointerdown", unlock);
-  window.addEventListener("keydown", unlock);
+  window.addEventListener("pointerdown", unlock, { once: true });
+  window.addEventListener("keydown", unlock, { once: true });
 }
 
 els.spin.addEventListener("click", pull);
@@ -604,7 +678,8 @@ els.sound.addEventListener("click", () => {
   if (state.soundOn) fanfare(false);
 });
 els.musicBtn.addEventListener("click", () => {
-  if (state.musicOn) stopMusic();
+  // Nếu UI đang "bật" nhưng bị chặn autoplay (im lặng) thì bấm lại = phát, không tắt.
+  if (isMusicAudible()) stopMusic();
   else startMusic();
 });
 els.full.addEventListener("click", () => {
