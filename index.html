@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#12082a" />
+  <title>Quay Số Trung Thu — Vầng Trăng May Mắn</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%23ffe566'/%3E%3Ccircle cx='42' cy='24' r='18' fill='%2312082a'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="sky" aria-hidden="true">
+    <div class="big-moon"></div>
+    <div class="stars" id="stars"></div>
+    <div class="fireflies" id="fireflies"></div>
+    <div class="lanterns" id="lanterns"></div>
+    <div class="floaters" id="floaters"></div>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-moon" aria-hidden="true">🌕</span>
+      <div>
+        <p class="eyebrow">Tết Trung Thu</p>
+        <h1>Vầng Trăng May Mắn</h1>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="btn-music" type="button" aria-pressed="false" title="Nhạc Trung Thu">🎵</button>
+      <button class="icon-btn" id="btn-sound" type="button" aria-pressed="true" title="Hiệu ứng âm thanh">🔊</button>
+      <button class="icon-btn" id="btn-full" type="button" title="Toàn màn hình">⛶</button>
+      <button class="icon-btn" id="btn-reset" type="button" title="Quay lại từ Giải Ba">🔄</button>
+    </div>
+  </header>
+
+  <main class="stage">
+    <div class="machine-wrap">
+      <div class="buddy buddy-left" aria-hidden="true">
+        <span class="hop">🐇</span>
+        <span class="cake">🥮</span>
+      </div>
+
+      <div class="machine" id="machine">
+        <div class="marquee">
+          <p class="marquee-sub" id="spin-kicker">Lần 1 / 3</p>
+          <h2 id="spin-label">GIẢI BA</h2>
+        </div>
+
+        <div class="window-frame">
+          <div class="reels" aria-label="Hàng trăm, hàng chục, hàng đơn vị">
+            <div class="reel" id="cell-100"><div class="strip" id="reel-100"></div></div>
+            <div class="reel" id="cell-10"><div class="strip" id="reel-10"></div></div>
+            <div class="reel" id="cell-1"><div class="strip" id="reel-1"></div></div>
+          </div>
+          <div class="reel-labels">
+            <span>Trăm</span>
+            <span>Chục</span>
+            <span>Đơn vị</span>
+          </div>
+        </div>
+
+        <button class="spin-btn compact" id="btn-spin" type="button">GẠT CẦN</button>
+      </div>
+
+      <button class="lever" id="lever" type="button" aria-label="Gạt cần quay số">
+        <span class="lever-arm">
+          <span class="lever-knob"></span>
+          <span class="lever-rod"></span>
+        </span>
+        <span class="lever-hinge"></span>
+      </button>
+    </div>
+
+    <div class="after-actions" id="after-actions" hidden>
+      <button class="spin-btn compact accept" id="btn-accept" type="button">Chúc mừng bé trúng giải — Quay giải tiếp!</button>
+      <button class="ghost-btn discard" id="btn-discard" type="button">Không có bé nào trúng — bỏ &amp; quay lại</button>
+    </div>
+  </main>
+
+  <section class="podium" aria-label="Bục trao giải">
+    <p class="podium-title">Bục bạn nhỏ may mắn</p>
+    <div class="podium-row">
+      <article class="prize prize-ba" id="card-ba">
+        <span class="prize-mascot" aria-hidden="true">🥮</span>
+        <p class="prize-badge">Hạng 3</p>
+        <p class="prize-name">Giải Ba</p>
+        <p class="prize-num" id="num-ba">•••</p>
+        <span class="prize-deco" aria-hidden="true">🏮</span>
+      </article>
+      <article class="prize prize-nhat" id="card-nhat">
+        <span class="prize-crown" aria-hidden="true">👑</span>
+        <span class="prize-mascot big" aria-hidden="true">🌕</span>
+        <p class="prize-badge">Siêu sao</p>
+        <p class="prize-name">Giải Nhất</p>
+        <p class="prize-num" id="num-nhat">•••</p>
+        <span class="prize-deco" aria-hidden="true">⭐⭐⭐</span>
+      </article>
+      <article class="prize prize-nhi" id="card-nhi">
+        <span class="prize-mascot" aria-hidden="true">🐇</span>
+        <p class="prize-badge">Hạng 2</p>
+        <p class="prize-name">Giải Nhì</p>
+        <p class="prize-num" id="num-nhi">•••</p>
+        <span class="prize-deco" aria-hidden="true">✨</span>
+      </article>
+    </div>
+  </section>
+
+  <audio id="bgm" src="music/trungthu.mp3" loop preload="auto"></audio>
+  <canvas id="confetti" class="confetti" aria-hidden="true"></canvas>
+  <script src="app.js"></script>
+</body>
+</html>
